@@ -1,0 +1,160 @@
+.Globo{
+    position: absolute;
+    font-size: 55px;
+    pointer-events: none;
+  }
+  .GloboEffecto{
+    animation: aparecerExplotar 2.00s forwards;
+  }
+  .GloboEffecto2{
+    animation: Explotar 0.65s forwards;
+  }
+  @keyframes aparecerExplotar {
+    0% {
+      transform: scale(0) ; /* Empieza invisible */
+      opacity: 0;
+    }
+    20% {
+      transform: scale(1); /* Crece hasta tamaño real */
+      opacity: 1;
+    }
+    95% {
+      transform: scale(1.2); /* Sube ligeramente */
+      opacity: 1;
+    }
+    100% {
+      transform: scale(3); /* Explota (desaparece) */
+      opacity: 0;
+    }
+  }
+  
+  @keyframes Explotar{
+    0% {
+      transform: scale(1.2) ; /* Empieza invisible */
+      opacity: 1;
+    }
+    100% {
+      transform: scale(3); /* Explota (desaparece) */
+      opacity: 0;
+    }
+  }
+  .Pertado{
+    position: absolute;
+    pointer-events: none;
+    font-size: 25px;
+  }
+  .Pertadoffecto{
+    animation: Pertadoffecto 0.38s linear 3;
+    pointer-events: none;
+    animation-fill-mode: forwards;
+    
+  }
+  @keyframes Pertadoffecto{
+    0% {
+      transform: scale(1) ; /* Empieza invisible */
+      opacity: 1;
+    }
+    100% {
+      transform: scale(3); /* Explota (desaparece) */
+      opacity: 0;
+    }
+  }
+.Foto{
+  font-size: 25px;
+  pointer-events: none;
+  animation: Explotar 0.65s forwards;
+}
+
+.EffectoConver {
+  position: absolute;
+  font-size: 30px;
+  pointer-events: none;
+  opacity: 0.8;
+}
+.EffectoConver2 {
+  position: absolute;
+  font-size: 30px;
+  pointer-events: none;
+  opacity: 0.8;
+  animation: aparecer 0.5s ease-out forwards reverse;
+}
+
+
+.Circulo {
+  position: absolute;
+  border: 4px dashed rgb(100, 90, 0);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.Circulo2 {
+  position: absolute;
+  border: 4px dashed rgb(100, 90, 0);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: desparecer 0.5s ease-out forwards;
+
+}
+/* Animación para DivConver */
+@keyframes aparecer {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes desparecer {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+/* Animación extra (rotación) */
+@keyframes rotar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Clases para las animaciones */
+.effecto-aparecer {
+  animation: aparecer 0.5s ease-out forwards;
+}
+.effecto-desaparecer {
+  animation: desparecer 0.5s ease-out forwards;
+}
+
+.effecto-rotar {
+  animation: rotar 1s linear infinite;
+}
+.effecto-Amplicador-rotar {
+  animation: rotar 8s linear infinite;
+}
+@keyframes fuegoAnimacion {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) translateY(-10px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.8) translateY(-20px);
+    opacity: 0;
+  }
+}
+.EffectoFuego {
+  position: absolute;
+  font-size: 25px;
+  pointer-events: none;
+  text-shadow: none;
+  animation: fuegoAnimacion 0.6s ease-out forwards;
+
+}

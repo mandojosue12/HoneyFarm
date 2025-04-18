@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Misiones Oso</title>
+</head>
+
+<body>
+    <h1>Editor de Misiones Oso</h1>
+    <form id="form-mision">
+        <label for="nombre">Nombre de la Misión:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado">
+            <option value="inactiva">Inactiva</option>
+            <option value="activa">Activa</option>
+            <option value="completada">Completada</option>
+        </select><br><br>
+
+        <label>Objetivos:</label>
+        <div id="objetivos-container">
+            <div class="objetivo">
+                <label for="tipo">Tipo:</label>
+                <select class="tipo" name="tipo">
+                    <option value="Polen">Polen</option>
+                    <option value="Miel">Miel</option>
+                </select>
+
+                <label for="campo">Campo:</label>
+                <select class="campo" name="campo" id="campo-select">
+                </select>
+
+                <label for="color">Color de Polen:</label>
+                <select class="color" name="color">
+                    <option value="NP">Cualquier Color</option>
+                    <option value="Rojo">Rojo🟥</option>
+                    <option value="Azul">Azul🟦</option>
+                    <option value="Blanco">Blanco⬜</option>
+                </select>
+
+                <label for="meta">Meta:</label>
+                <input type="number" class="meta" name="meta" required>
+                <br><br>
+            </div>
+        </div>
+
+        <button type="button" onclick="agregarObjetivo()">Agregar Otro Objetivo</button><br><br>
+
+        <label for="recompensa-miel">Recompensa Miel:</label>
+        <input type="number" id="recompensa-miel" name="recompensa-miel" required><br><br>
+
+        <label for="recompensa-items">Recompensa Items:</label>
+        <div id="items-container">
+            <div class="item">
+                <label for="item-nombre">Item:</label>
+                <select class="item-nombre" name="item-nombre" id="item-select">
+                </select>
+
+                <label for="item-cantidad">Cantidad:</label>
+                <input type="number" class="item-cantidad" name="item-cantidad" required>
+                <br><br>
+            </div>
+        </div>
+
+        <button type="button" onclick="agregarItem()">Agregar Otro Item</button><br><br>
+
+        <button type="button" onclick="agregarMision()">Agregar Misión</button>
+    </form>
+    <h2>Misiones</h2>
+    <button class="copy-btn" onclick="copiarMisiones()">Copiar Código</button>
+    <pre id="misiones-lista"></pre>
+    <script src="js/Funciones/FuncionInventario.js"></script>
+    <script src="js/Funciones/FuncionesCampos.js"></script>
+    <script src="js/Misones/MisionesOsos/MisionesOso.js"></script>
+
+    <script>
+        function inicializarSelects() {
+            const campoSelect = document.getElementById('campo-select');
+            const itemSelect = document.getElementById('item-select');
+
+            campoSelect.innerHTML = '<option value="NP">Cualquier Campo</option>';
+            for (const key in Campos) {
+                const option = document.createElement('option');
+                option.value = Campos[key].Nombre;
+                option.textContent = Campos[key].Nombre + Campos[key].icon;
+                campoSelect.appendChild(option);
+            }
+
+            itemSelect.innerHTML = '<option value="">Seleccione un ítem</option>';
+            gameItems.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.Nombre;
+                option.textContent = item.Nombre + item.emoji;
+                itemSelect.appendChild(option);
+            });
+        }
+
+        function agregarObjetivo() {
+            const container = document.getElementById('objetivos-container');
+            const nuevoObjetivo = document.querySelector('.objetivo').cloneNode(true);
+            container.appendChild(nuevoObjetivo);
+        }
+
+        function agregarItem() {
+            const container = document.getElementById('items-container');
+            const nuevoItem = document.querySelector('.item').cloneNode(true);
+            container.appendChild(nuevoItem);
+        }
+
+        function agregarMision() {
+            const nombre = document.getElementById('nombre').value;
+            const estado = document.getElementById('estado').value;
+            const recompensaMiel = parseInt(document.getElementById('recompensa-miel').value);
+
+            const itemsElements = document.querySelectorAll('#items-container .item');
+            const recompensaItems = Array.from(itemsElements).map(item => ({
+                Nombre: item.querySelector('.item-nombre').value,
+                Cantidad: parseInt(item.querySelector('.item-cantidad').value)
+            }));
+
+            const objetivosElements = document.querySelectorAll('#objetivos-container .objetivo');
+            const objetivos = Array.from(objetivosElements).map(objetivo => ({
+                Tipo: objetivo.querySelector('.tipo').value,
+                Campo: objetivo.querySelector('.campo').value,
+                ColorPolen: objetivo.querySelector('.color').value,
+                Meta: parseInt(objetivo.querySelector('.meta').value),
+                Progreso: 0,
+                Terminda: false
+            }));
+
+            const nuevaMision = {
+                id: Object.keys(misionesOso).length + 1,
+                Nombre: nombre,
+                estado: estado,
+                objetivos: objetivos,
+                Recompensa: { miel: recompensaMiel, items: recompensaItems }
+            };
+
+            misionesOso[`m${nuevaMision.id}`] = nuevaMision;
+
+            mostrarMisiones();
+            document.getElementById('form-mision').reset();
+            document.getElementById('objetivos-container').innerHTML = '<div class="objetivo">' + document.querySelector('.objetivo').innerHTML + '</div>';
+            document.getElementById('items-container').innerHTML = '<div class="item">' + document.querySelector('.item').innerHTML + '</div>';
+        }
+
+        function mostrarMisiones() {
+            let codigo = 'const misionesOso = {\n';
+            for (const [key, mision] of Object.entries(misionesOso)) {
+                codigo += `    ${key}: {\n`;
+                codigo += `        id: ${mision.id},\n`;
+                codigo += `        Nombre: "${mision.Nombre}",\n`;
+                codigo += `        estado: "${mision.estado}",\n`;
+                codigo += `        objetivos: [\n`;
+                mision.objetivos.forEach(obj => {
+                    codigo += `{`;
+                    codigo += `Tipo: "${obj.Tipo}",`;
+                    codigo += `Campo: "${obj.Campo}",`;
+                    codigo += `ColorPolen: "${obj.ColorPolen}",`;
+                    codigo += `Meta: ${obj.Meta},`;
+                    codigo += `Progreso: ${obj.Progreso},`;
+                    codigo += `Terminda: ${obj.Terminda}`;
+                    codigo += `},\n`;
+                });
+                codigo += `        ],\n`;
+                codigo += `Recompensa: {\n`;
+                codigo += `miel: ${mision.Recompensa.miel},\n`;
+                codigo += `            items: [\n`;
+                mision.Recompensa.items.forEach(item => {
+                    codigo += `                {`;
+                    codigo += `                    Nombre: "${item.Nombre}",`;
+                    codigo += `                    Cantidad: ${item.Cantidad}`;
+                    codigo += `                },\n`;
+                });
+                codigo += `            ]\n`;
+                codigo += `        }\n`;
+                codigo += `    },\n`;
+            }
+            codigo += '};';
+
+            document.getElementById('misiones-lista').textContent = codigo;
+        }
+
+        function copiarMisiones() {
+            const misionesTexto = document.getElementById('misiones-lista').textContent;
+            navigator.clipboard.writeText(misionesTexto).then(() => {
+                alert('Código copiado al portapapeles.');
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        }
+        inicializarSelects();
+        mostrarMisiones()
+
+    </script>
+</body>
+
+</html>
